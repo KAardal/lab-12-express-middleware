@@ -10,31 +10,33 @@ const app = express();
 let server;
 const serverControl = module.exports = {};
 
-// TODO: add routes
 
-// TODO: add middleware
+app.use(require('../route/widget-router.js'));
+app.use(require('./error-middleware.js'));
 
 serverControl.start = () => {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if(!server || !server.isOn) {
       server = app.listen(process.env.PORT, () => {
         console.log('server is up on', process.env.PORT);
         server.isOn = true;
-        return resolve();
+        resolve();
       });
+      return;
     }
     reject();
   });
 };
 
 serverControl.stop = () => {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if(server && server.isOn) {
-      server.close(process.env.PORT, () => {
+      server.close(() => {
         console.log('server is down');
         server.isOn = false;
-        return resolve();
+        resolve();
       });
+      return;
     }
     reject();
   });
