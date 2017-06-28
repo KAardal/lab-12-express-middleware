@@ -24,7 +24,7 @@ widgetRouter.get('/api/widgets/:id', (req, res, next) => {
   .catch(next);
 });
 
-widgetRouter.put('/api/widgets/:id', (req, res, next) => {
+widgetRouter.put('/api/widgets/:id', jsonParser, (req, res, next) => {
   console.log('hit PUT api/widgets/:id');
 
   let options = {
@@ -32,13 +32,14 @@ widgetRouter.put('/api/widgets/:id', (req, res, next) => {
     new: true,
   };
 
-  console.log('put id', req.params.id);
   Widget.findByIdAndUpdate(req.params.id, req.body, options)
   .then(widget => res.json(widget))
-  .catch(next);
+  .catch((err) => {
+    next(err);
+  });
 });
 
-widgetRouter.delete('/api/widgets/:id', (reg, res, next) => {
+widgetRouter.delete('/api/widgets/:id', (req, res, next) => {
   console.log('hit DELETE api/widgets/:id');
 
   Widget.findByIdAndRemove(req.params.id)

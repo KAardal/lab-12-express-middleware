@@ -80,7 +80,7 @@ describe('testing widget router', () => {
     it('should respond with 404', () => {
       return superagent.get(`${API_URL}/api/widgets/5952dba4ee50a87192182f6d`)
       .then(res => {
-        expect(res.status).toEqual(200);
+        expect(res.status).toEqual(404);
       });
     });
   });
@@ -100,21 +100,35 @@ describe('testing widget router', () => {
     afterEach(() => Widget.remove({}));
 
     it('should respond with a widget', () => {
+      let updated = {
+        name: 'different name',
+        price: 10,
+        description: 'new stuff',
+      };
       return superagent.put(`${API_URL}/api/widgets/${temp._id}`)
-      .send({name: 'wat'})
+      .send(updated)
       .then(res => {
         expect(res.status).toEqual(200);
         expect(res.body._id).toEqual(temp._id);
-        expect(res.body.name).toEqual('wat');
-        expect(res.body.price).toEqual(temp.price);
-        expect(res.body.description).toEqual(temp.description);
+        expect(res.body.name).toEqual(updated.name);
+        expect(res.body.price).toEqual(updated.price);
+        expect(res.body.description).toEqual(updated.description);
+      });
+    });
+
+    it('should respond with 400', () => {
+      let updated = {wrong: 'bad'};
+      return superagent.put(`${API_URL}/api/widgets/${temp._id}`)
+      .send(updated)
+      .then(res => {
+        expect(res.status).toEqual(200);
       });
     });
 
     it('should respond with 404', () => {
-      return superagent.put(`${API_URL}/api/widgets/5952dba4ee50a87192182f6d`)
+      return superagent.put(`${API_URL}/api/widgets/5952dba4ee50a871kjhkjh6d`)
       .then(res => {
-        expect(res.status).toEqual(200);
+        expect(res.status).toEqual(404);
       });
     });
   });
@@ -135,8 +149,7 @@ describe('testing widget router', () => {
       });
     });
 
-    it('should delete a widget', () => {
-      console.log('temp', temp);
+    it('should delete a widget and respond 204', () => {
       return superagent.delete(`${API_URL}/api/widgets/${temp._id}`)
       .then(res => {
         expect(res.status).toEqual(204);
@@ -144,7 +157,6 @@ describe('testing widget router', () => {
     });
 
     it('bad id should respond with a 404', () => {
-      console.log('temp', temp);
       return superagent.delete(`${API_URL}/api/widgets/5952a8d5c1b8d566a64ea23f`)
       .catch(res => {
         expect(res.status).toEqual(404);
