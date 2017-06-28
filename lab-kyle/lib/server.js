@@ -12,6 +12,9 @@ const serverControl = module.exports = {};
 
 
 app.use(require('../route/widget-router.js'));
+app.all('/api/*', (req, res, next) => {
+  res.sendStatus(404);
+});
 app.use(require('./error-middleware.js'));
 
 serverControl.start = () => {
