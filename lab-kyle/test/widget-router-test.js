@@ -79,7 +79,7 @@ describe('testing widget router', () => {
 
     it('should respond with 404', () => {
       return superagent.get(`${API_URL}/api/widgets/5952dba4ee50a87192182f6d`)
-      .then(res => {
+      .catch(res => {
         expect(res.status).toEqual(404);
       });
     });
@@ -120,14 +120,14 @@ describe('testing widget router', () => {
       let updated = {wrong: 'bad'};
       return superagent.put(`${API_URL}/api/widgets/${temp._id}`)
       .send(updated)
-      .then(res => {
-        expect(res.status).toEqual(200);
+      .catch(res => {
+        expect(res.status).toEqual(400);
       });
     });
 
     it('should respond with 404', () => {
       return superagent.put(`${API_URL}/api/widgets/5952dba4ee50a871kjhkjh6d`)
-      .then(res => {
+      .catch(res => {
         expect(res.status).toEqual(404);
       });
     });
